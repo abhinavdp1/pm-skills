@@ -376,7 +376,26 @@ Selected skills based on the work of:
 - Sean Ellis — [*Hacking Growth*](https://www.amazon.com/Hacking-Growth-Fastest-Growing-Companies-Breakout/dp/045149721X/)
 - Maja Voje — [*Go-To-Market Strategist*](https://gtmstrategist.com/)
 
-Curated by [The Product Compass Newsletter](https://www.productcompass.pm) by Paweł Huryn.
+Curated by Paweł Huryn from [The Product Compass Newsletter](https://www.productcompass.pm).
+
+## Known Issue on Windows
+
+If your Cowork is unstable and can't start a VM ([claude-code/issues/27010](https://github.com/anthropics/claude-code/issues/27010)] try:
+
+```powershell
+$action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-WindowStyle Hidden -Command `"if ((Get-Service CoworkVMService).Status -ne 'Running') { Start-Service CoworkVMService }`""
+
+$trigger = New-ScheduledTaskTrigger -RepetitionInterval (New-TimeSpan -Minutes 1) -Once -At (Get-Date)
+
+$settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries
+
+Register-ScheduledTask -TaskName "CoworkVMServiceMonitor" `
+  -Action $action `
+  -Trigger $trigger `
+  -Settings $settings `
+  -RunLevel Highest `
+  -User "SYSTEM"
+```
 
 ## License
 
